@@ -15,6 +15,9 @@ The **Fansub Note Plugin** is a custom plugin for Obsidian that allows users to 
 2. Move the downloaded folder to your Obsidian `.obsidian/plugins/` directory.
 3. Create the main.js file, compiling the project with:
 	```
+ 	npm install
+ 	```
+	```
  	npm run dev
  	```
    
