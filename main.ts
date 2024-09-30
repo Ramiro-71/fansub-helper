@@ -1,23 +1,48 @@
 import { App, Plugin, Modal, TextComponent, ButtonComponent, DropdownComponent, TFolder } from "obsidian";
 
+interface FansubPluginSettings {
+	lastSelectedFolder: string;
+}
+
+const DEFAULT_SETTINGS: FansubPluginSettings = {
+	lastSelectedFolder: "/", // Valor por defecto
+};
+
 export default class FansubPlugin extends Plugin {
-	onload() {
+	settings: FansubPluginSettings;
+
+	async onload() {
+		// Cargar la configuración
+		await this.loadSettings();
+
 		// Agregamos el botón a la barra lateral izquierda
 		this.addRibbonIcon("plus", "Fansub Plugin", () => {
-			new FansubModal(this.app).open();
+			new FansubModal(this.app, this).open();
 		});
+	}
+
+	// Función para cargar la configuración del plugin
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	// Función para guardar la configuración del plugin
+	async saveSettings() {
+		await this.saveData(this.settings);
 	}
 }
 
 class FansubModal extends Modal {
+	plugin: FansubPlugin;
 	titleField: TextComponent;
 	authorField: TextComponent;
 	totalPagesField: TextComponent;
 	folderDropdown: DropdownComponent;
-	selectedFolder: string = ""; // Valor inicial vacío
+	selectedFolder: string = "";
 
-	constructor(app: App) {
+	constructor(app: App, plugin: FansubPlugin) {
 		super(app);
+		this.plugin = plugin; // Acceso al plugin y configuración
 	}
 
 	onOpen() {
@@ -83,7 +108,7 @@ class FansubModal extends Modal {
 	// Función para poblar el desplegable con las carpetas del vault
 	populateFolders() {
 		const folders = this.getAllFolders();
-		
+
 		// Agregamos un valor predeterminado para asegurarnos de que siempre haya una opción
 		if (folders.length === 0) {
 			this.folderDropdown.addOption("root", "/"); // Opción por defecto si no hay carpetas
@@ -93,21 +118,23 @@ class FansubModal extends Modal {
 			});
 		}
 
-		this.folderDropdown.onChange((value) => {
-			this.selectedFolder = value;
-		});
-
-		// Establecemos un valor por defecto para el dropdown
-		if (folders.length > 0) {
+		// Establecemos la última carpeta seleccionada como predeterminada
+		if (this.plugin.settings.lastSelectedFolder && folders.some(f => f.path === this.plugin.settings.lastSelectedFolder)) {
+			this.folderDropdown.setValue(this.plugin.settings.lastSelectedFolder);
+			this.selectedFolder = this.plugin.settings.lastSelectedFolder;
+		} else if (folders.length > 0) {
 			this.selectedFolder = folders[0].path; // Establece el primer valor como predeterminado
 			this.folderDropdown.setValue(folders[0].path);
 		}
+
+		this.folderDropdown.onChange((value) => {
+			this.selectedFolder = value;
+		});
 	}
 
 	// Función para obtener todas las carpetas del vault
 	getAllFolders(): TFolder[] {
 		const folders: TFolder[] = [];
-		const rootFolder = this.app.vault.getRoot(); // Usamos this.app.vault en lugar de Vault directamente
 		this.app.vault.getAllLoadedFiles().forEach((file) => {
 			if (file instanceof TFolder) {
 				folders.push(file);
@@ -158,6 +185,10 @@ class FansubModal extends Modal {
 		// Verificamos que se haya seleccionado una carpeta y guardamos la nota en esa ruta
 		const folderPath = this.selectedFolder ? `${this.selectedFolder}/` : '';
 		const filePath = `${folderPath}${title}.md`;
+
+		// Guardar la última carpeta seleccionada en la configuración
+		this.plugin.settings.lastSelectedFolder = this.selectedFolder;
+		this.plugin.saveSettings(); // Guardamos la configuración
 
 		// Lógica para crear la nota
 		this.app.vault.create(filePath, content).then(() => {
