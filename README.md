@@ -1,49 +1,36 @@
-<div align="center">
-  <h1>🪨 Obsidian Plugin Creation</h1>
-  <p>How to create your own Obsidian plugin</p>
-</div>
+# Fansub Note Plugin for Obsidian
 
-# About Obsidian
+## Description
+The **Fansub Note Plugin** is a custom plugin for Obsidian that allows users to quickly create notes for tracking fansub translations. It features an intuitive modal that prompts the user to input details such as title, author, and total pages. The plugin also includes the ability to select a folder from the Obsidian vault where the note will be saved. Once created, the note will automatically open in the editor.
 
-- [Obsidian](https://obsidian.md) is a **note taking** app based on Markdown files
-- It's **extensible**
+## Features
+- **Create new notes** for fansub translations.
+- **Custom modal** to enter the title, author, and total pages.
+- **Folder selection** to choose where to save the note in your Obsidian vault.
+- **Automatic note opening** after creation.
+- Notes are formatted with YAML front matter for tags and author information.
+  
+## Installation
+1. Clone or download this repository.
+2. Move the downloaded folder to your Obsidian `.obsidian/plugins/` directory.
+3. Open Obsidian, go to Settings > Community Plugins, and enable the Fansub Note Plugin.
 
-# About this plugin
+## Usage
+1. Once the plugin is enabled, you will see a new button in the ribbon on the left side of the Obsidian interface.
+2. Click the button labeled **Fansub Plugin** (it will show a "+" icon).
+3. A modal window will appear asking for the following details:
+   - **Title**: The title of your new note.
+   - **Author**: The name of the person who translated or created the fansub.
+   - **Total Pages**: Number of pages to include in the note.
+   - **Choose Folder**: A dropdown to select which folder in your vault to save the note.
+4. Click **Create** to generate the note, and it will open automatically.
 
-- Simple plugin, that counts the number of lines of the active file
-- The line count will be visible in the status bar
-
-# Resources
-
-- Official [Obsidian Plugin Template](https://github.com/obsidianmd/obsidian-sample-plugin)
-- Unofficial [Obsidian Plugin Developer Docs](https://marcus.se.net/obsidian-plugin-docs)
-
-# Usage
-
-**Requirement**
-
-- [Obsidian](https://obsidian.md)
-- [Git](https://git-scm.com)
-- [GitHub](https://github.com) account
-- [Node.js](https://nodejs.org)
-- Code Editor (I recommend [VSCode](https://code.visualstudio.com))
-- Basic [TypeScript](https://www.typescriptlang.org) knowledge
-
-**Installation**
-
-1. Open terminal
-2. `cd path/to/your/obsidian/vault/.obsidian/plugins`
-3. `git clone https://github.com/flolu/obsidian-plugin`
-4. `npm install`
-5. `npm run dev`
-6. In Obsidian, press `Ctrl + P` and select `Reload app without saving`
-7. In Obsidian, go to settings -> Community plugins -> Enable "Example Plugin"
-
-**Commands**
-
-- `npm i` (Install dependencies)
-- `npm run dev` (Install dependencies)
-
-**Releasing**
-
-- [Releasing new releases](https://github.com/obsidianmd/obsidian-sample-plugin#releasing-new-releases)
+### Example YAML Front Matter in Created Note:
+```yaml
+---
+tags:
+  - translation
+title: Example Title
+translatedTitle: Empty
+author: Example Author
+---
