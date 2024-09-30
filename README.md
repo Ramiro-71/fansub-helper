@@ -13,7 +13,12 @@ The **Fansub Note Plugin** is a custom plugin for Obsidian that allows users to 
 ## Installation
 1. Clone or download this repository.
 2. Move the downloaded folder to your Obsidian `.obsidian/plugins/` directory.
-3. Open Obsidian, go to Settings > Community Plugins, and enable the Fansub Note Plugin.
+3. Create the main.js file, compiling the project with:
+	```
+ 	npm run dev
+ 	```
+   
+4. Open Obsidian, go to Settings > Community Plugins, and enable the Fansub Note Plugin.
 
 ## Usage
 1. Once the plugin is enabled, you will see a new button in the ribbon on the left side of the Obsidian interface.
